@@ -24,8 +24,22 @@ class PizarraView(context: Context, attrs: AttributeSet?):View(context, attrs){
     override fun onDraw(canvas: Canvas){
         when (event.action){
             MotionEvent.ACTION_DOWN ->{
-                
+                currentPath = Path().apply {moveTo(event.x, event.y)}
+            }
+
+            MotionEvent.ACTION_MOVE ->{
+                currentPath?.lineTo(event.x, event.y)
+                invalidate()
+            }
+
+            MotionEvent.ACTION_UP ->{
+                currentPath?.let { path ->
+                    model?.addPath(DrawPath(Path(path), Paint(currentPaint)))
+                }
+                currentPath = null
+                invalidate()
             }
         }
+        return true
     }
 }
